@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Zhiyuan Jiao">
+    <meta name="description" content="This page provide an interactive experience to view the info about shooting incidents in New York City and changes over time.">
+    <title>NYC Shooting Incidents</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- Mapbox CSS and JS -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet'/>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
+    <!-- load stylesheet next -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Page header -->
+    <header>            
+        <nav class="navbar navbar-dark bg-secondary">
+            <div class="container-fluid">
+              <span class="navbar-brand mb-0 h1">New York City Shooting incidents</span>
+            </div>
+          </nav>
+    </header>
+
+    <!-- Main page content -->
+    <main>
+        <div id='map'></div>
+        <div id='console'>
+            <p>Data: <a href='https://data.cityofnewyork.us/Public-Safety/NYPD-Shooting-Incident-Data-Historic-/833y-fsy8'>Shooting Incidents</a> in NYC, since 2006</p>
+        </div>
+    </main>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoia2Vyd2luamlhbyIsImEiOiJja3FneGRqZDEwMDkxMnZvYWJxcGp1ODNlIn0.SfmxLJDtVrLrWzGiKCXpVg';
+
+        const map = new mapboxgl.Map({
+        container: 'map', // container element id
+        style: 'mapbox://styles/mapbox/light-v10',
+        center: [-74.0059, 40.7128], // initial map center in [lon, lat]
+        zoom: 12
+        });
+
+        map.on('load', () => {
+            map.addLayer({
+                id: 'collisions',
+                type: 'circle',
+                source: {
+                type: 'geojson',
+                data: 'assets/NYPD Shooting Incident Data (Historic).geojson' // data comes in
+                },
+                paint: {
+                'circle-color': '#AA5E79',
+                'circle-opacity': 0.7
+                },
+            });
+        });
+
+        // const marker = new mapboxgl.Marker() // Initialize a new marker
+        // .setLngLat([-74.0059, 40.7128]) // Marker [lng, lat] coordinates
+        // .addTo(map); // Add the marker to the map
+
+        const geocoder = new MapboxGeocoder({
+            // Initialize the geocoder
+            accessToken: mapboxgl.accessToken, // Set the access token
+            mapboxgl: mapboxgl, // Set the mapbox-gl instance
+            marker: false, // Do not use the default marker style
+            placeholder: 'Search for places in NYC', // Placeholder text for the search bar
+            bbox: [-74.124115,40.662391,-73.876922,40.765053], // Boundary for NYC
+            proximity: {
+                longitude: -74.0059,
+                latitude: 40.7128
+            } // Coordinates of NYC
+        });
+        
+        // Add the geocoder to the map
+        map.addControl(geocoder);
+        
+        // After the map style has loaded on the page,
+        // add a source layer and default styling for a single point
+        map.on('load', () => {
+            map.addSource('single-point', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'FeatureCollection',
+                    'features': []
+                }
+            });
+        
+            map.addLayer({
+                'id': 'point',
+                'source': 'single-point',
+                'type': 'circle',
+                'paint': {
+                    'circle-radius': 10,
+                    'circle-color': '#448ee4'
+                }
+            });
+            
+            // Listen for the `result` event from the Geocoder // `result` event is triggered when a user makes a selection
+            //  Add a marker at the result's coordinates
+            geocoder.on('result', (event) => {
+                map.getSource('single-point').setData(event.result.geometry);
+            });
+        });
+    </script>
+</body>
+</html>
