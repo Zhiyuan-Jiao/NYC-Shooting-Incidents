@@ -68,6 +68,11 @@ a {
 }
 
 .mapboxgl-ctrl-geocoder {
-    min-width: 400px;
+    min-width: 500px;
     top: 50px;
+}
+
+.mapboxgl-popup {
+    max-width: 400px;
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
