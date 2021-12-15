@@ -4,7 +4,7 @@ This is a breakdown of every shooting incident that occurred in NYC going back t
 ## Goal:
 The goal of this project is to inform all the shooting incidents that happen around them before so they could have a more comprehensive understanding about the safety situation in their neighbour. An Active Shooter is an individual actively engaged in killing or attempting to kill people in a confined and populated area; in most cases, active shooters use firearm and there is no pattern or method to their selection of victims. Sometimes, active shooter situations are unpredictable and evolve quickly. Typically, the immediate deployment of law enforcement is required to stop the shooting and mitigate harm to victims. But with an application like this, people can check their surrounding safty level through past incidents by themself and make safer decisions. 
 ## Application URL:
-https://github.com/Zhiyuan-Jiao/NYC-Shooting-Incidents
+https://zhiyuan-jiao.github.io/NYC-Shooting-Incidents/
 ## Screenshot:
 ![ApplicationScreenshot](img/ApplicationScreenshot.png)
 ## Main Function:
